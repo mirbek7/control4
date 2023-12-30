@@ -57,8 +57,8 @@ class Cat {
             hungerLevel += 10;
             moodLevel += 10;
 
-            hungerLevel += age <= 5 ? 7 : (age <= 10 ? 5 : 4);
-            moodLevel += age <= 5 ? 7 : (age <= 10 ? 5 : 4);
+            hungerLevel = hungerLevel + (age <= 5 ? 7 : (age <= 10 ? 5 : 4));
+            moodLevel = moodLevel + (age <= 5 ? 7 : (age <= 10 ? 5 : 4));
             updateLevels ();
             actionTakenToday = true;
         }
