@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class AppRunner {
     private static List<Cat> cats;
@@ -69,12 +70,12 @@ public class AppRunner {
         System.out.printf ("%-3s | %-10s | %-7s | %-10s | %-7s | %-16s%n",
                 "#", "Имя", "Возраст", "Здоровье", "Настроение", "Сытость");
         System.out.println ("----------------------------------------------------------------------");
-        for (int i = 0; i < cats.size (); i++) {
+        IntStream.range (0, cats.size ()).forEachOrdered (i -> {
             Cat cat = cats.get (i);
             System.out.printf ("%-3d | %-10s | %-7d | %-10d | %-10d | %-20d%n",
                     (i + 1), cat.getName (), cat.getAge (), cat.getHealthLevel (),
                     cat.getMoodLevel (), cat.getHungerLevel ());
-        }
+        });
         System.out.println ("-----------------------------------------------------------------------");
     }
 
@@ -128,7 +129,6 @@ public class AppRunner {
                     1.Feed Cat
                     2.Play with Cat
                     3.Heal Cat
-                    a.Get a new pet
                 """);
 
         int actionChoice;
@@ -158,47 +158,38 @@ public class AppRunner {
         }
 
         switch (actionChoice) {
-            case 1:
+            case 1 -> {
                 selectedCat.feed ();
                 System.out.println (selectedCat.getName () + " has been fed.");
-                break;
-            case 2:
+            }
+            case 2 -> {
                 selectedCat.play ();
                 System.out.println (selectedCat.getName () + " has played.");
-                break;
-            case 3:
+            }
+            case 3 -> {
                 selectedCat.heal ();
                 System.out.println (selectedCat.getName () + " has been healed.");
-                break;
-            default:
-                System.out.println ("Invalid action.");
+            }
+            default -> System.out.println ("Invalid action.");
         }
 
         sortCatsByAverageLifeLevel ();
     }
 
     private static Cat findCatByName(String name) {
-        for (Cat cat : cats) {
-            if (cat.getName ().equalsIgnoreCase (name)) {
-                return cat;
-            }
-        }
-        return null;
+        return cats.stream ().filter (cat -> cat.getName ().equalsIgnoreCase (name)).findFirst ().orElse (null);
     }
 
     private static void simulateNextDay() {
-        for (Cat cat : cats) {
+        cats.forEach (cat -> {
             int hungerChange = getRandomValueInRange (1, 5);
             cat.setHungerLevel (cat.getHungerLevel () - hungerChange);
-
             int moodChange = getRandomValueInRange (-3, 3);
             cat.setMoodLevel (cat.getMoodLevel () + moodChange);
-
             int healthChange = getRandomValueInRange (-3, 3);
             cat.setHealthLevel (cat.getHealthLevel () + healthChange);
-
             cat.updateLevels ();
-        }
+        });
 
         System.out.println ("Day has passed. Cat attributes have been updated.");
 
@@ -209,21 +200,16 @@ public class AppRunner {
     }
 
     public static void nextDay() {
-        for (Cat cat : cats) {
-            cat.resetActionPerformedToday ();
-        }
-        for (Cat cat : cats) {
+        cats.forEach (Cat::resetActionPerformedToday);
+        cats.forEach (cat -> {
             int hungerChange = getRandomValueInRange (1, 5);
             cat.setHungerLevel (cat.getHungerLevel () - hungerChange);
-
             int moodChange = getRandomValueInRange (-3, 3);
             cat.setMoodLevel (cat.getMoodLevel () + moodChange);
-
             int healthChange = getRandomValueInRange (-3, 3);
             cat.setHealthLevel (cat.getHealthLevel () + healthChange);
-
             cat.updateLevels ();
-        }
+        });
         System.out.println ("Day has passed. Cat attributes have been updated.");
     }
 }
